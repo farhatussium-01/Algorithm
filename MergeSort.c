@@ -1,83 +1,56 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-// Merges two subarrays of arr[].
-// First subarray is arr[l..m]
-// Second subarray is arr[m+1..r]
-void merge(int arr[], int l, int m, int r){
-    
-    int i, j, k;
-    int n1 = m - l + 1;
-    int n2 = r - m;
+void merge(int A[], int low, int mid, int high) {
+    int i = low, j = mid + 1, k = 0;
+    int B[high - low + 1];
 
-    // Create temp arrays
-    int L[n1], R[n2];
-
-    // Copy data to temp arrays L[] and R[]
-    for (i = 0; i < n1; i++)
-        L[i] = arr[l + i];
-    for (j = 0; j < n2; j++)
-        R[j] = arr[m + 1 + j];
-
-    // Merge the temp arrays back into arr[l..r
-    i = 0;
-    j = 0;
-    k = l;
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) {
-            arr[k] = L[i];
-            i++;
+    while (i <= mid && j <= high) {
+        if (A[i] <= A[j]) {
+            B[k++] = A[i++];
+        } else {
+            B[k++] = A[j++];
         }
-        else {
-            arr[k] = R[j];
-            j++;
-        }
-        k++;
     }
 
-    // Copy the remaining elements of L[],
-    // if there are any
-    while (i < n1) {
-        arr[k] = L[i];
-        i++;
-        k++;
+    while (i <= mid) {
+        B[k++] = A[i++];
     }
 
-    // Copy the remaining elements of R[],
-    // if there are any
-    while (j < n2) {
-        arr[k] = R[j];
-        j++;
-        k++;
+    while (j <= high) {
+        B[k++] = A[j++];
+    }
+
+    for (i = low, k = 0; i <= high; i++, k++) {
+        A[i] = B[k];
     }
 }
 
-// l is for left index and r is right index of the
-// sub-array of arr to be sorted
-void mergeSort(int arr[], int l, int r){
-    
-    if (l < r) {
-        int m = l + (r - l) / 2;
-
-        // Sort first and second halves
-        mergeSort(arr, l, m);
-        mergeSort(arr, m + 1, r);
-
-        merge(arr, l, m, r);
+void mergeSort(int A[], int low, int high) {
+    if (low < high) {
+        int mid = (low + high) / 2;
+        mergeSort(A, low, mid);
+        mergeSort(A, mid + 1, high);
+        merge(A, low, mid, high);
     }
 }
 
-// Driver code
-int main(){
-    
-    int arr[] = {38, 27, 43, 10};
-    int arr_size = sizeof(arr) / sizeof(arr[0]);
+int main() {
+    int n;
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
 
-    mergeSort(arr, 0, arr_size - 1);
-    int i;
-    for (i = 0; i < arr_size; i++)
-        printf("%d ", arr[i]);
-    printf("\n");
-    
+    int A[n];
+    printf("Enter %d elements: ", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &A[i]);
+    }
+
+    mergeSort(A, 0, n - 1);
+
+    printf("Sorted array: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", A[i]);
+    }
+
     return 0;
 }
